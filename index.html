@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+
+<head>
+    <title>NG Viewer</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+
+    <style>
+        .open-file-dialog {
+            display: none;
+        }
+        .open-graph-button {
+            background-color: white;
+            color: black;
+            border: 2px solid #286AB1;
+            border-radius: 0.5em;
+            text-align: center;
+            transition-duration: 0.4s;
+            cursor: pointer;
+            font-size: 12px;
+            height: 2.7em;
+            width: 10.5em;
+        }
+        .open-graph-button:hover {
+            background-color: #286AB1;
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="graph">
+        <button id="open-graph-button" class="open-graph-button">Open Graph...</button>
+        <input type="file" id="open-file-dialog" class="open-file-dialog" multiple="false" accept=".ng">
+    </div>
+
+    <script>
+        $("#open-graph-button").on("click", function (e) {
+            $("#open-file-dialog").click();
+        });
+
+        $("#open-file-dialog").on("change", function(e) {
+
+            function handleFile(f) {
+                console.log("Load NG file:", f.name);
+
+                JSZip.loadAsync(f).then(
+                    function(zip) {
+                        zip.forEach(function (relativePath, zipEntry) {
+                            if (zipEntry.name === "graph.svg") {
+                                console.log("Read ", zipEntry.name, " file...");
+                                zipEntry.async("string").then(
+                                    function success(content) {
+                                        $("#graph").html(content);
+                                        // TODO: Handle Events
+                                        // TODO: Handle Events
+                                    },
+                                    function error(e) {
+                                        console.log("Failed to load the ", zipEntry.name, " file from ", f.name);
+                                    }
+                                );
+                            } else if (zipEntry.name === "data.json") {
+                                console.log("Read ", zipEntry.name, " file...");
+                                zipEntry.async("string").then(
+                                    function success(content) {
+                                        // TODO: Parse JSON
+                                        // TODO: Parse JSON
+                                        console.log("Status data.json: Success");
+                                    },
+                                    function error(e) {
+                                        console.log("Failed to load the ", zipEntry.name, " file from ", f.name);
+                                    }
+                                );
+
+                            } else {
+                                alert("Unknown entry: " + zipEntry.name);
+                                console.log("Unknown entry: ", zipEntry.name);
+                            }
+                        });
+                    },
+                    function (e) {
+                        console.log("Error reading " + f.name + ": " + e.message);
+                    }
+                );
+            }
+
+            var files = e.target.files;
+            for (var i = 0; i < files.length; i++) {
+                handleFile(files[i]);
+            }
+        });
+    </script>
+</body>
+</html>
