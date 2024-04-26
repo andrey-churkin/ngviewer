@@ -25,6 +25,16 @@
             background-color: #286AB1;
             color: white;
         }
+
+        /* ========== Node Styles ========== */
+        .node-border-active {
+            stroke-width: 2px;
+            stroke: red;
+        }
+        .node-border-hover {
+            stroke-width: 2px;
+            cursor: pointer;
+        }
     </style>
 </head>
 
@@ -35,6 +45,25 @@
     </div>
 
     <script>
+        function attachEventHandlersToNodes() {
+            const $graphNodes = $("g.node");
+
+            $graphNodes.hover(
+                function() {
+                    $(this).find("path").addClass("node-border-hover")
+                },
+                function() {
+                    $(this).find("path").removeClass("node-border-hover");
+                }
+            );
+            $graphNodes.on("click", function() {
+                $(this).find("path").addClass("node-border-active");
+                // TODO: Use `nodeId` to get attributes
+                const nodeId = $(this).attr("id");
+                console.log("Active NodeId: ", nodeId);
+            });
+        }
+
         $("#open-graph-button").on("click", function (e) {
             $("#open-file-dialog").click();
         });
@@ -52,8 +81,7 @@
                                 zipEntry.async("string").then(
                                     function success(content) {
                                         $("#graph").html(content);
-                                        // TODO: Handle Events
-                                        // TODO: Handle Events
+                                        attachEventHandlersToNodes();
                                     },
                                     function error(e) {
                                         console.log("Failed to load the ", zipEntry.name, " file from ", f.name);
