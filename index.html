@@ -45,6 +45,8 @@
     </div>
 
     <script>
+        let graphAttrs = null;
+
         function attachEventHandlersToNodes() {
             const $graphNodes = $("g.node");
 
@@ -60,7 +62,12 @@
                 $(this).find("path").addClass("node-border-active");
                 // TODO: Use `nodeId` to get attributes
                 const nodeId = $(this).attr("id");
-                console.log("Active NodeId: ", nodeId);
+                if (graphAttrs !== null) {
+                    const nodeAttrs = graphAttrs[nodeId];
+                    // TODO: Render node attributes
+                    console.log("NodeId: ", nodeId, "Node Attrs: ", nodeAttrs);
+                    // TODO: Render node attributes
+                }
             });
         }
 
@@ -91,9 +98,7 @@
                                 console.log("Read ", zipEntry.name, " file...");
                                 zipEntry.async("string").then(
                                     function success(content) {
-                                        // TODO: Parse JSON
-                                        // TODO: Parse JSON
-                                        console.log("Status data.json: Success");
+                                        graphAttrs = JSON.parse(content);
                                     },
                                     function error(e) {
                                         console.log("Failed to load the ", zipEntry.name, " file from ", f.name);
