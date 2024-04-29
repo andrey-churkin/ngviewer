@@ -4,6 +4,7 @@
     <title>NG Viewer</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/svg-pan-zoom@3.6.1/dist/svg-pan-zoom.min.js"></script>
 
     <style>
         .open-file-dialog {
@@ -39,7 +40,7 @@
 </head>
 
 <body>
-    <div id="graph">
+    <div id="svg-container">
         <button id="open-graph-button" class="open-graph-button">Open Graph...</button>
         <input type="file" id="open-file-dialog" class="open-file-dialog" multiple="false" accept=".ng">
     </div>
@@ -87,7 +88,15 @@
                                 console.log("Read ", zipEntry.name, " file...");
                                 zipEntry.async("string").then(
                                     function success(content) {
-                                        $("#graph").html(content);
+                                        let $svgContainer = $("#svg-container");
+                                        $svgContainer.html(content);
+
+                                        svgPanZoom($svgContainer.children().first().get(0), {
+                                            zoomEnabled: true,
+                                            controlIconsEnabled: true,
+                                            mouseWheelZoomEnabled: false
+                                        });
+
                                         attachEventHandlersToNodes();
                                     },
                                     function error(e) {
