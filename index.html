@@ -47,6 +47,7 @@
 
     <script>
         let graphAttrs = null;
+        let prevSelected = null;
 
         function attachEventHandlersToNodes() {
             const $graphNodes = $("g.node");
@@ -60,9 +61,15 @@
                 }
             );
             $graphNodes.on("click", function() {
-                $(this).find("path").addClass("node-border-active");
                 // TODO: Use `nodeId` to get attributes
                 const nodeId = $(this).attr("id");
+
+                if (prevSelected !== null) {
+                    prevSelected.removeClass("node-border-active");
+                }
+
+                prevSelected = $(this).find("path");
+                prevSelected.addClass("node-border-active");
                 if (graphAttrs !== null) {
                     const nodeAttrs = graphAttrs[nodeId];
                     // TODO: Render node attributes
