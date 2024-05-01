@@ -7,13 +7,33 @@
     <script src="https://cdn.jsdelivr.net/npm/svg-pan-zoom@3.6.1/dist/svg-pan-zoom.min.js"></script>
 
     <style>
+        body {
+            margin: 0;
+        }
+        .start-page {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+            background-color: #d9edc2;
+        }
+        .logo {
+            -webkit-text-stroke: 3px #3b6d36;
+            font-family: 'Roboto', sans-serif;
+            font-size: 50pt;
+            margin-bottom: 20px;
+            color: #d9edc2;
+        }
         .open-file-dialog {
             display: none;
         }
-        .open-graph-button {
-            background-color: white;
-            color: black;
-            border: 2px solid #286AB1;
+        .ng-button {
+            background-color: #d9edc2;
+            color: #3b6d36;
+            border: 2px solid #3b6d36;
             border-radius: 0.5em;
             text-align: center;
             transition-duration: 0.4s;
@@ -22,9 +42,9 @@
             height: 2.7em;
             width: 10.5em;
         }
-        .open-graph-button:hover {
-            background-color: #286AB1;
-            color: white;
+        .ng-button:hover {
+            background-color: #3b6d36;
+            color: #d9edc2;
         }
 
         /* ========== Node Styles ========== */
@@ -40,10 +60,13 @@
 </head>
 
 <body>
-    <div id="svg-container">
-        <button id="open-graph-button" class="open-graph-button">Open Graph...</button>
+    <div id="start-page" class="start-page">
+        <h1 class="logo">NG Viewer</h1>
+        <button id="open-graph-button" class="ng-button">Open NG File</button>
         <input type="file" id="open-file-dialog" class="open-file-dialog" multiple="false" accept=".ng">
     </div>
+
+    <div id="svg-container"></div>
 
     <script>
         let graphAttrs = null;
@@ -98,6 +121,7 @@
                                 zipEntry.async("string").then(
                                     function success(content) {
                                         let $svgContainer = $("#svg-container");
+                                        $("#start-page").hide();
                                         $svgContainer.html(content);
 
                                         svgPanZoom($svgContainer.children().first().get(0), {
